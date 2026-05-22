@@ -25,11 +25,10 @@ public class DBConnection {
 String port = "22625";
 String database = "defaultdb";
 String username = "avnadmin";
-String password = "YOUR_AIVEN_PASSWORD";
+String password = "1234";
 
-String url =
-"jdbc:mysql://" + host + ":" + port + "/" + database +
-"?sslMode=REQUIRED";
+String url = "jdbc:mysql://" + host + ":" + port + "/" + database +
+"?useSSL=true&requireSSL=true&verifyServerCertificate=false";
 
 con = DriverManager.getConnection(url, username, password);
                 System.out.println("Database Connected Successfully");
