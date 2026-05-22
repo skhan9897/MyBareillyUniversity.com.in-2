@@ -21,20 +21,17 @@ public class DBConnection {
                 // RAILWAY MYSQL DETAILS
                 // ==============================
 
-                String host = "YOUR_AIVEN_HOST";
+              String host = "mysql-xxxx.aivencloud.com";
 String port = "22625";
 String database = "defaultdb";
 String username = "avnadmin";
-String password = "1234";
+String password = "YOUR_AIVEN_PASSWORD";
 
-                // JDBC URL
-                String url =
+String url =
 "jdbc:mysql://" + host + ":" + port + "/" + database +
 "?sslMode=REQUIRED";
 
-                // Create Connection
-                con = DriverManager.getConnection(url, username, password);
-
+con = DriverManager.getConnection(url, username, password);
                 System.out.println("Database Connected Successfully");
             }
 
