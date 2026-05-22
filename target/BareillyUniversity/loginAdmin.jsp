@@ -76,7 +76,7 @@
             <div class="error">Invalid Email or Password</div>
         <% } %>
 
-        <form action="loginAdmin" method="post">
+        <form action="dashboard.jsp" method="post">
             <table>
                 <tr>
                     <td>Email:</td>

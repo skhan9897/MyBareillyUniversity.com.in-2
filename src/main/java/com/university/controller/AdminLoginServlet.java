@@ -15,15 +15,16 @@ public class AdminLoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         // 👉 Admin hardcoded
-        if (email.equals("msazidraza0786@gmail.com") && password.equals("1234")) {
+        if(email.equals("musaidraza0786@gmail.com") && password.equals("1234")) {
 
-            HttpSession session = request.getSession();
-            session.setAttribute("admin", email);
+    HttpSession session = request.getSession();
+    session.setAttribute("admin", email);
 
-            response.sendRedirect("dashboard.jsp"); // ✅ direct dashboard
+    response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
 
-        } else {
-            response.sendRedirect("loginAdmin.jsp"); // ❌ invalid
-        }
+} else {
+
+    response.sendRedirect(request.getContextPath() + "/loginAdmin.jsp");
+}
     }
 }
