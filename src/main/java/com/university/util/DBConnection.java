@@ -21,18 +21,16 @@ public class DBConnection {
                 // RAILWAY MYSQL DETAILS
                 // ==============================
 
-                String host = "turntable.proxy.rlwy.net";
-                String port = "51827";
-                String database = "railway";
-                String username = "root";
-                String password = "SLHktmkZhUbQpHRwuyHkolYJXvKG1UvU";
+                String host = "YOUR_AIVEN_HOST";
+String port = "22625";
+String database = "defaultdb";
+String username = "avnadmin";
+String password = "1234";
 
                 // JDBC URL
                 String url =
-                        "jdbc:mysql://" + host + ":" + port + "/" + database
-                        + "?useSSL=false"
-                        + "&allowPublicKeyRetrieval=true"
-                        + "&serverTimezone=UTC";
+"jdbc:mysql://" + host + ":" + port + "/" + database +
+"?sslMode=REQUIRED";
 
                 // Create Connection
                 con = DriverManager.getConnection(url, username, password);
