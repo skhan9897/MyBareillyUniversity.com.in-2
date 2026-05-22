@@ -8,7 +8,6 @@ com\university\controller\AddFeesServlet.class
 com\university\controller\GenerateIdCardServlet.class
 com\university\model\Fees.class
 com\university\controller\AdminLogoutServlet.class
-PayFeesServlet.class
 com\university\model\Admin.class
 com\university\controller\EditStudentServlet.class
 com\university\controller\StudentLoginServlet.class
@@ -18,5 +17,6 @@ com\university\controller\AdminLoginServlet.class
 com\university\util\DBConnection.class
 com\university\dao\FeesDAO.class
 com\university\controller\DeleteStudentServlet.class
+com\university\controller\PayFeesServlet.class
 com\university\controller\StudentLogoutServlet.class
 com\university\dao\StudentDAO.class

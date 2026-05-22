@@ -9,7 +9,7 @@
         margin: 0;
         padding: 0;
         font-family: Arial, sans-serif;
-        background: url('images/university.png') no-repeat center center/cover;
+        background: url('images/university.jpeg') no-repeat center center/cover;
         height: 100vh;
     }
 

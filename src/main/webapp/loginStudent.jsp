@@ -71,7 +71,7 @@ body {
 
 <div class="login-box">
 
-    <img src="images/logo.png">
+    <img src="images/logo2.png">
 
     <h2>Student Login</h2>
 
@@ -94,6 +94,12 @@ body {
            required>
 
     <button type="submit">Login</button>
+    <a href="dashboard.jsp"
+           class="btn back">
+
+           Back
+        </a>
+
 
 </form>
 

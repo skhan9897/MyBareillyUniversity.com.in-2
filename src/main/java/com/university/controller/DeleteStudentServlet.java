@@ -8,7 +8,7 @@ import javax.servlet.http.*;
 
 import com.university.util.DBConnection;
 
-@WebServlet("/deleteStudent")
+@WebServlet("/DeleteStudentServlet")
 public class DeleteStudentServlet extends HttpServlet {
 
 protected void doGet(HttpServletRequest request, HttpServletResponse response)

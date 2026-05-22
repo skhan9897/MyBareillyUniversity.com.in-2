@@ -277,7 +277,7 @@ body{
 
         <div class="logo">
 
-            <img src="images/logo.png">
+            <img src="images/logo3.png">
 
             <span>MY BAREILLY UNIVERSITY</span>
 
@@ -295,7 +295,7 @@ body{
                 Login Student
             </a>
 
-            <a class="btn3" href="viewStudents.jsp">
+            <a class="btn3" href="viewStudent.jsp">
                 View Students
             </a>
 
@@ -355,7 +355,7 @@ body{
 
             <a class="btn2" href="loginStudent.jsp">Login Student</a>
 
-            <a class="btn3" href="viewStudents.jsp">View Students</a>
+            <a class="btn3" href="viewStudent.jsp">View Students</a>
 
             <a class="btn4" href="addFees.jsp">Add Fees</a>
 

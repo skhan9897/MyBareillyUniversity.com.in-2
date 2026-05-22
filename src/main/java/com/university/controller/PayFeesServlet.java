@@ -1,82 +1,101 @@
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.WebServlet;
-import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+package com.university.controller;
 
-@WebServlet("/payFees")
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/PayFeesServlet")
+
 public class PayFeesServlet extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+    @Override
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+        try {
 
-        if(session == null || session.getAttribute("email") == null){
-            response.sendRedirect("loginStudent.jsp");
-            return;
-        }
+            int studentId =
+            Integer.parseInt(
+            request.getParameter("studentId"));
 
-        String email = (String) session.getAttribute("email");
-        double amount = Double.parseDouble(request.getParameter("amount"));
+            double amount =
+            Double.parseDouble(
+            request.getParameter("amount"));
 
-        Connection con = null;
-
-        try{
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            con = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/Bareilly_University","root","1234");
+            Connection con =
+            DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/Bareilly_University",
+            "root",
+            "1234"
+            );
 
-            // 🔥 IMPORTANT: proper column fetch
-            PreparedStatement ps = con.prepareStatement(
-                "SELECT id, name, phone FROM students WHERE email=?");
+            // CURRENT FEES
 
-            ps.setString(1, email);
+            PreparedStatement ps1 =
+            con.prepareStatement(
+            "SELECT fees FROM students WHERE id=?"
+            );
 
-            ResultSet rs = ps.executeQuery();
+            ps1.setInt(1, studentId);
 
-            int id = 0;
-            String name = "";
-            String phone = "";
+            ResultSet rs = ps1.executeQuery();
 
-            if(rs.next()){
-                id = rs.getInt("id");
-                name = rs.getString("name");
-                phone = rs.getString("phone");
+            double currentFees = 0;
 
-                System.out.println("DEBUG -> ID: " + id);
-                System.out.println("DEBUG -> Phone: " + phone);
+            if(rs.next()) {
+
+                currentFees =
+                rs.getDouble("fees");
             }
 
-            // ❗ अगर id 0 है मतलब DB issue
-            if(id == 0){
-                response.getWriter().println("Student not found in DB");
-                return;
+            // REMAINING FEES
+
+            double remainingFees =
+            currentFees - amount;
+
+            if(remainingFees < 0) {
+
+                remainingFees = 0;
             }
 
-            // insert fees
-            PreparedStatement ps2 = con.prepareStatement(
-                "INSERT INTO fees(student_id, amount, payment_date) VALUES(?,?,NOW())");
+            // UPDATE FEES
 
-            ps2.setInt(1, id);
-            ps2.setDouble(2, amount);
+            PreparedStatement ps2 =
+            con.prepareStatement(
+            "UPDATE students SET fees=? WHERE id=?"
+            );
+
+            ps2.setDouble(1, remainingFees);
+
+            ps2.setInt(2, studentId);
+
             ps2.executeUpdate();
 
-            // 🔥 PASS DATA (FINAL)
-            request.setAttribute("id", id);
-            request.setAttribute("name", name);
-            request.setAttribute("phone", phone);
-            request.setAttribute("amount", amount);
-            request.setAttribute("date", new java.util.Date().toString());
+            con.close();
 
-            RequestDispatcher rd = request.getRequestDispatcher("receipt.jsp");
-            rd.forward(request, response);
+            // REDIRECT
 
-        }catch(Exception e){
-            e.printStackTrace();
+            response.sendRedirect("viewFees.jsp");
+
         }
+
+        catch(Exception e) {
+
+            response.getWriter().println(e);
+
+        }
+
     }
+
 }

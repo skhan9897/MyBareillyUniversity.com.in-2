@@ -9,7 +9,7 @@
 body {
     margin: 0;
     font-family: Arial;
-    background: url("images/university.png") no-repeat center center;
+    background: url("images/university.jpeg") no-repeat center center;
     background-size: cover;
 }
 
@@ -147,7 +147,7 @@ window.onload = function() {
 <!-- POPUP -->
 <div id="popup">
     <div class="popup-content">
-        <img src="images/logo.png" class="logo">
+        <img src="images/logo3.png" class="logo">
         <div class="typing">Welcome To My Bareilly University</div>
     </div>
 </div>

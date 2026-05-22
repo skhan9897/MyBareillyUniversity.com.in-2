@@ -26,7 +26,7 @@ rs.next();
 body{
     margin:0;
     font-family:Arial;
-    background:url('images/university.png') no-repeat center;
+    background:url('images/university.jpeg') no-repeat center;
     background-size:cover;
 }
 
@@ -54,7 +54,7 @@ body{
 /* ? WATERMARK */
 .container::before{
     content:"";
-    background:url('images/logo.png') no-repeat center;
+    background:url('images/logo2.png') no-repeat center;
     background-size:200px;
     opacity:0.08;
     position:absolute;
@@ -102,7 +102,7 @@ h2{
 
 <!-- ? TOP LOGO -->
 <div class="top-logo">
-    <img src="images/logo.png">
+    <img src="images/logo2.png">
     <h2>Edit Student</h2>
 </div>
 

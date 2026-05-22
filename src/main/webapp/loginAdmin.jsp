@@ -7,7 +7,7 @@
         body {
             margin: 0;
             font-family: Arial;
-            background: url("images/university.png") no-repeat center center fixed;
+            background: url("images/university.jpeg") no-repeat center center fixed;
             background-size: cover;
         }
 

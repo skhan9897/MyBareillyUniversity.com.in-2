@@ -1,116 +1,322 @@
-<%@ page session="true" %>
+<%@page import="java.sql.*"%>
 
 <%
-String email = (String) session.getAttribute("email");
+
+String email =
+(String)session.getAttribute("studentEmail");
+
 if(email == null){
-    response.sendRedirect("loginStudent.jsp");
-    return;
+
+response.sendRedirect("loginStudent.jsp");
+
+return;
+
 }
+
 %>
 
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
 <title>Pay Fees</title>
 
 <style>
+
 body{
+
     margin:0;
+    padding:0;
     font-family:Arial;
-    background:url("images/university.png") no-repeat center;
+
+    background:url('images/university.jpeg');
+
     background-size:cover;
+    background-position:center;
 }
 
-/* OVERLAY FIX (IMPORTANT) */
 .overlay{
-    position:fixed;
+
     width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.3);
-    top:0;
-    left:0;
-    z-index:0;
+    height:100vh;
+
+    background:rgba(0,0,0,0.55);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
-/* BOX */
 .box{
+
+    width:700px;
+
+    background:rgba(255,255,255,0.95);
+
+    border-radius:20px;
+
+    padding:40px;
+
     position:relative;
-    z-index:10;   /* ? THIS FIXES CLICK ISSUE */
-    width:380px;
-    margin:120px auto;
-    padding:30px;
-    background:white;
-    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:0 0 20px rgba(0,0,0,0.4);
+}
+
+.box::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:300px;
+    height:300px;
+
+    background:url('images/logo.png');
+
+    background-size:contain;
+    background-repeat:no-repeat;
+
+    opacity:0.06;
+}
+
+h1{
+
     text-align:center;
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+
+    margin-bottom:30px;
+
+    color:#222;
+
+    position:relative;
+
+    z-index:2;
 }
 
-/* LOGO */
-.logo{
-    width:60px;
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    position:relative;
+
+    z-index:2;
 }
 
-/* INPUT */
+table td{
+
+    padding:16px;
+
+    border-bottom:1px solid #ddd;
+
+    font-size:18px;
+
+    color:#222;
+}
+
+.label{
+
+    font-weight:bold;
+
+    width:40%;
+}
+
+.formbox{
+
+    margin-top:30px;
+
+    position:relative;
+
+    z-index:2;
+}
+
 input{
-    width:90%;
-    padding:12px;
-    margin:15px 0;
-    border-radius:6px;
+
+    width:100%;
+
+    padding:14px;
+
+    border-radius:8px;
+
     border:1px solid #ccc;
-    font-size:15px;
+
+    margin-top:10px;
+
+    font-size:18px;
 }
 
-/* BUTTON */
 button{
-    width:95%;
-    padding:12px;
+
+    width:100%;
+
+    padding:15px;
+
+    background:#00b894;
+
     border:none;
-    border-radius:6px;
-    background:linear-gradient(45deg,#00c853,#64dd17);
+
     color:white;
-    font-size:16px;
+
+    font-size:18px;
+
+    border-radius:10px;
+
+    margin-top:20px;
+
     cursor:pointer;
-    transition:0.3s;
+
+    font-weight:bold;
 }
 
 button:hover{
-    transform:scale(1.05);
-    background:linear-gradient(45deg,#00b248,#4caf50);
+
+    background:#00997a;
 }
 
-/* BACK BUTTON */
 .back{
-    margin-top:10px;
-    display:inline-block;
-    text-decoration:none;
-    color:#333;
+
+    text-align:center;
+
+    margin-top:20px;
 }
+
+.back a{
+
+    text-decoration:none;
+
+    background:#00bcd4;
+
+    color:white;
+
+    padding:12px 24px;
+
+    border-radius:10px;
+
+    display:inline-block;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<div class="overlay"></div>
+<div class="overlay">
 
 <div class="box">
 
-    <img src="images/logo.png" class="logo">
-    <h2>Pay Fees</h2>
+<h1>Pay Fees</h1>
 
-    <!-- ? FORM FIX -->
-    <form action="payFees" method="post">
+<%
 
-        <input type="number" name="amount" placeholder="Enter Amount" required>
+try{
 
-        <!-- ? BUTTON FIX -->
-        <button type="submit">Pay Now</button>
+Class.forName("com.mysql.cj.jdbc.Driver");
 
-    </form>
+Connection con =
+DriverManager.getConnection(
+"jdbc:mysql://localhost:3306/Bareilly_University",
+"root",
+"1234"
+);
 
-    <a href="studentDashboard.jsp" class="back">Back</a>
+PreparedStatement ps =
+con.prepareStatement(
+"SELECT * FROM students WHERE email=?"
+);
+
+ps.setString(1,email);
+
+ResultSet rs = ps.executeQuery();
+
+if(rs.next()){
+
+%>
+
+<table>
+
+<tr>
+<td class="label">Student ID</td>
+<td><%=rs.getInt("id")%></td>
+</tr>
+
+<tr>
+<td class="label">Student Name</td>
+<td><%=rs.getString("name")%></td>
+</tr>
+
+<tr>
+<td class="label">Department</td>
+<td><%=rs.getString("department")%></td>
+</tr>
+
+<tr>
+<td class="label">Total Fees</td>
+<td><%=rs.getString("fees")%></td>
+</tr>
+
+</table>
+
+<div class="formbox">
+
+<form action="PayFeesServlet" method="post">
+
+<input type="hidden"
+name="studentId"
+value="<%=rs.getInt("id")%>">
+
+<input type="number"
+name="amount"
+placeholder="Enter Amount To Pay"
+required>
+
+<button type="submit">
+
+Proceed To Pay
+
+</button>
+
+</form>
+
+</div>
+
+<%
+
+}
+
+con.close();
+
+}catch(Exception e){
+
+out.println(e);
+
+}
+
+%>
+
+<div class="back">
+
+<a href="studentDashboard.jsp">
+
+Back To Dashboard
+
+</a>
+
+</div>
+
+</div>
 
 </div>
 
 </body>
+
 </html>

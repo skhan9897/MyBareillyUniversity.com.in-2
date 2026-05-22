@@ -1,7 +1,8 @@
 <%@page import="java.sql.*"%>
 
 <%
-String email = (String) session.getAttribute("studentEmail");
+
+String email = (String)session.getAttribute("studentEmail");
 
 if(email == null){
 
@@ -9,23 +10,29 @@ if(email == null){
     return;
 }
 
+String id="";
 String name="";
 String phone="";
 String dept="";
-String photo="default.jpeg";
+String photo="default.jpg";
+
+
 
 try{
 
     Class.forName("com.mysql.cj.jdbc.Driver");
 
-    Connection con = DriverManager.getConnection(
+    Connection con =
+    DriverManager.getConnection(
     "jdbc:mysql://localhost:3306/Bareilly_University",
     "root",
-    "1234");
+    "1234"
+    );
 
     PreparedStatement ps =
     con.prepareStatement(
-    "SELECT * FROM students WHERE email=?");
+    "SELECT * FROM students WHERE email=?"
+    );
 
     ps.setString(1,email);
 
@@ -33,203 +40,332 @@ try{
 
     if(rs.next()){
 
+        id = rs.getString("id");
         name = rs.getString("name");
+        email = rs.getString("email");
         phone = rs.getString("phone");
         dept = rs.getString("department");
+
         photo = rs.getString("photo");
+
+        if(photo == null || photo.trim().equals("")){
+
+            photo = "default.jpg";
+        }
     }
 
 }catch(Exception e){
 
     out.println(e);
 }
+
 %>
 
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
 <title>Student Dashboard</title>
 
 <style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
 body{
-    margin:0;
-    font-family: 'Segoe UI';
-    background:url('images/university.png') no-repeat center center fixed;
-    background-size:cover;
+
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+background:url('images/university.jpeg');
+
+background-size:cover;
+background-position:center;
 }
 
-/* ? NAVBAR */
-.navbar{
-    background: rgba(0,0,0,0.8);
-    padding: 12px;
-    text-align:center;
+.container{
+
+width:720px;
+
+padding:40px;
+
+border-radius:25px;
+
+background:rgba(255,255,255,0.15);
+
+backdrop-filter:blur(12px);
+
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+
+position:relative;
+
+overflow:hidden;
+
+color:white;
 }
 
-.navbar a{
-    color:white;
-    text-decoration:none;
-    margin:0 15px;
-    font-size:16px;
-    position:relative;
+.container::before{
+
+content:"";
+
+position:absolute;
+
+top:50%;
+left:50%;
+
+transform:translate(-50%,-50%);
+
+width:300px;
+height:300px;
+
+background:url('images/logo.png');
+
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+
+opacity:0.08;
 }
 
-.navbar a::after{
-    content:"";
-    width:0;
-    height:2px;
-    background:#00c6ff;
-    position:absolute;
-    left:0;
-    bottom:-5px;
-    transition:0.3s;
-}
-
-.navbar a:hover::after{
-    width:100%;
-}
-
-/* ? CARD */
-.card{
-    width:800px;
-    margin:60px auto;
-    background:rgba(255,255,255,0.95);
-    padding:30px;
-    border-radius:15px;
-    box-shadow:0 0 25px rgba(0,0,0,0.4);
-    position:relative;
-}
-
-/* WATERMARK */
-.card::before{
-    content:"";
-    background:url('images/logo.png') no-repeat center;
-    background-size:250px;
-    opacity:0.05;
-    position:absolute;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-}
-
-/* CONTENT */
-.content{
-    position:relative;
-    z-index:2;
-}
-
-/* PROFILE */
 .profile{
-    text-align:center;
+
+text-align:center;
+
+margin-bottom:25px;
+
+position:relative;
+
+z-index:2;
 }
 
 .profile img{
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    border:4px solid #00c6ff;
+
+width:130px;
+height:130px;
+
+border-radius:50%;
+
+border:4px solid #55e6ff;
+
+object-fit:cover;
+
+background:white;
 }
 
-/* TABLE */
+.profile h2{
+
+margin-top:15px;
+
+font-size:34px;
+}
+
 table{
-    width:100%;
-    margin-top:20px;
-    border-collapse:collapse;
+
+width:100%;
+
+border-collapse:collapse;
+
+position:relative;
+
+z-index:2;
 }
 
-td{
-    padding:12px;
-    border-bottom:1px solid #ddd;
-    font-size:16px;
+table tr{
+
+border-bottom:1px solid rgba(255,255,255,0.3);
 }
 
-td:first-child{
-    font-weight:bold;
-    color:#333;
+table td{
+
+padding:15px;
+
+font-size:18px;
 }
 
-/* BUTTONS */
+table td:first-child{
+
+font-weight:bold;
+
+width:220px;
+}
+
 .buttons{
-    text-align:center;
-    margin-top:25px;
+
+margin-top:35px;
+
+display:flex;
+
+justify-content:center;
+
+gap:20px;
+
+flex-wrap:wrap;
+
+position:relative;
+
+z-index:2;
 }
 
-.btn{
-    padding:10px 18px;
-    margin:5px;
-    border:none;
-    border-radius:6px;
-    color:white;
-    cursor:pointer;
+.buttons a{
+
+padding:12px 22px;
+
+border-radius:10px;
+
+text-decoration:none;
+
+font-weight:bold;
+
+color:white;
+
+transition:0.3s;
 }
 
-.view{ background:#17a2b8; }
-.id{ background:#28a745; }
-.pay{ background:#ffc107; color:black;}
-.logout{ background:#dc3545; }
+.view{
+background:#00c3ff;
+}
 
-.btn:hover{
-    opacity:0.85;
+.id{
+background:#00d26a;
+}
+
+.pay{
+background:#ffc107;
+color:black !important;
+}
+
+.logout{
+background:#ff5c5c;
+}
+
+.buttons a:hover{
+
+transform:scale(1.08);
+}
+
+.topmenu{
+
+position:absolute;
+
+top:20px;
+
+display:flex;
+
+gap:35px;
+}
+
+.topmenu a{
+
+color:white;
+
+font-weight:bold;
+
+text-decoration:none;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<!-- ? NAVBAR -->
-<div class="buttons">
+<div class="topmenu">
 
-    <a href="viewFees.jsp" class="btn blue">
-        View Fees
-    </a>
-
-    <a href="idCard.jsp" class="btn green">
-        ID Card
-    </a>
-
-    <a href="payFees.jsp" class="btn yellow">
-        Pay Fees
-    </a>
-
-    <a href="StudentLogoutServlet" class="btn red">
-        Logout
-    </a>
-
-</div>
-
-<!-- ? DASHBOARD CARD -->
-<div class="card">
-<div class="content">
-
-    <div class="profile">
-       <img src="uploads/<%=photo%>"
-     class="profile-photo">
-        <h2>Student Dashboard</h2>
-    </div>
-
-    <!-- ? TABLE -->
-    <table>
-        <tr><td>Name</td><td><%=name%></td></tr>
-        <tr><td>Email</td><td><%=email%></td></tr>
-        <tr><td>Phone</td><td><%=phone%></td></tr>
-        <tr><td>Department</td><td><%=dept%></td></tr>
-       
-    </table>
-
-    <!-- ? BUTTONS -->
-    <div class="buttons">
-        <a href="viewFees.jsp">View Fees</a>
+<a href="viewFees.jsp">View Fees</a>
 
 <a href="idCard.jsp">ID Card</a>
 
 <a href="payFees.jsp">Pay Fees</a>
 
 <a href="StudentLogoutServlet">Logout</a>
-    </div>
 
 </div>
+
+<div class="container">
+
+<div class="profile">
+
+<%
+String photoPath = photo;
+
+if(photoPath == null || photoPath.equals("")){
+    photoPath = "default.png";
+}
+%>
+
+<img src="images/uploads/<%=photoPath%>"
+     width="120"
+     height="120"
+     style="
+        border-radius:50%;
+        border:4px solid #55e6ff;
+        object-fit:cover;
+     ">
+
+<h2>Student Dashboard</h2>
+
+</div>
+
+<table>
+
+<tr>
+<td>Student ID</td>
+<td><%=id%></td>
+</tr>
+
+<tr>
+<td>Name</td>
+<td><%=name%></td>
+</tr>
+
+<tr>
+<td>Email</td>
+<td><%=email%></td>
+</tr>
+
+<tr>
+<td>Phone</td>
+<td><%=phone%></td>
+</tr>
+
+<tr>
+<td>Department</td>
+<td><%=dept%></td>
+</tr>
+
+</table>
+
+<div class="buttons">
+
+<a href="viewFees.jsp" class="view">
+View Fees
+</a>
+
+<a href="idCard.jsp" class="id">
+ID Card
+</a>
+
+<a href="payFees.jsp" class="pay">
+Pay Fees
+</a>
+
+<a href="StudentLogoutServlet" class="logout">
+Logout
+</a>
+
+</div>
+
 </div>
 
 </body>
+
 </html>

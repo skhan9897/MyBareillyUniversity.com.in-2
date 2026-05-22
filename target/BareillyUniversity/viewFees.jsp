@@ -1,160 +1,249 @@
-<%@ page import="java.sql.*" %>
-<%@ page session="true" %>
+<%@page import="java.sql.*"%>
 
 <%
-String email = (String) session.getAttribute("email");
+
+String email =
+(String)session.getAttribute("studentEmail");
 
 if(email == null){
-    response.sendRedirect("loginStudent.jsp");
-    return;
+
+response.sendRedirect("loginStudent.jsp");
+
+return;
+
 }
 
-String name="", phone="", dept="", photo="default.jpg";
-int studentId = 0;
-
-try{
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection con = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/Bareilly_University","root","1234");
-
-    // student data
-    PreparedStatement ps1 = con.prepareStatement("SELECT * FROM students WHERE email=?");
-    ps1.setString(1,email);
-    ResultSet rs1 = ps1.executeQuery();
-
-    if(rs1.next()){
-        studentId = rs1.getInt("id");
-        name = rs1.getString("name");
-        phone = rs1.getString("phone");
-        dept = rs1.getString("department");
-        photo = rs1.getString("photo");
-    }
 %>
 
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
 <title>View Fees</title>
 
 <style>
+
 body{
     margin:0;
+    padding:0;
     font-family:Arial;
-    background:url("images/university.png") no-repeat center;
+    background:url('images/university.jpeg');
     background-size:cover;
+    background-position:center;
 }
 
-/* CARD */
-.card{
-    width:800px;
-    margin:50px auto;
-    background:rgba(255,255,255,0.95);
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 15px rgba(0,0,0,0.3);
-}
-
-/* HEADER */
-.header{
-    text-align:center;
-}
-
-.photo{
-    width:100px;
-    height:100px;
-    border-radius:50%;
-    border:3px solid #2196f3;
-    object-fit:cover;
-}
-
-/* DETAILS */
-.details{
-    margin-top:15px;
-    text-align:left;
-}
-
-.details p{
-    margin:5px 0;
-}
-
-/* TABLE */
-table{
+.overlay{
     width:100%;
-    margin-top:20px;
-    border-collapse:collapse;
+    height:100vh;
+    background:rgba(0,0,0,0.6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
-th{
-    background:#2196f3;
+.box{
+
+    width:700px;
+
+    background:rgba(255,255,255,0.12);
+
+    backdrop-filter:blur(12px);
+
+    border-radius:20px;
+
+    padding:40px;
+
     color:white;
-    padding:10px;
+
+    position:relative;
+
+    overflow:hidden;
 }
 
-td{
-    padding:10px;
+.box::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:320px;
+
+    height:320px;
+
+    background:url('images/logo2.png');
+
+    background-size:contain;
+
+    background-repeat:no-repeat;
+
+    opacity:0.08;
+}
+
+h1{
+
     text-align:center;
+
+    margin-bottom:30px;
+
+    position:relative;
+
+    z-index:2;
 }
 
-tr:nth-child(even){
-    background:#f2f2f2;
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    position:relative;
+
+    z-index:2;
 }
+
+table td{
+
+    padding:16px;
+
+    border-bottom:1px solid rgba(255,255,255,0.2);
+
+    font-size:18px;
+}
+
+.back{
+
+    text-align:center;
+
+    margin-top:30px;
+
+    position:relative;
+
+    z-index:2;
+}
+
+.back a{
+
+    text-decoration:none;
+
+    background:#00bcd4;
+
+    color:white;
+
+    padding:12px 24px;
+
+    border-radius:10px;
+
+    font-weight:bold;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<div class="card">
+<div class="overlay">
 
-    <div class="header">
-        <img src="images/<%=session.getAttribute("photo")%>" width="100">
-        <h2><%=name%></h2>
-    </div>
+<div class="box">
 
-    <div class="details">
-        <p><b>Email:</b> <%=email%></p>
-        <p><b>Phone:</b> <%=phone%></p>
-        <p><b>Department:</b> <%=dept%></p>
-    </div>
-
-    <h3>Fees Payment History</h3>
-
-    <table border="1">
-        <tr>
-            <th>Receipt ID</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Time</th>
-        </tr>
+<h1>Student Fees Details</h1>
 
 <%
-    // fees history
-    PreparedStatement ps2 = con.prepareStatement(
-        "SELECT * FROM fees WHERE student_id=? ORDER BY payment_date DESC");
-    ps2.setInt(1, studentId);
 
-    ResultSet rs2 = ps2.executeQuery();
+try{
 
-    while(rs2.next()){
+Class.forName("com.mysql.cj.jdbc.Driver");
+
+Connection con =
+DriverManager.getConnection(
+"jdbc:mysql://localhost:3306/Bareilly_University",
+"root",
+"1234"
+);
+
+PreparedStatement ps =
+con.prepareStatement(
+"SELECT * FROM students WHERE email=?"
+);
+
+ps.setString(1,email);
+
+ResultSet rs = ps.executeQuery();
+
+if(rs.next()){
+
 %>
 
-        <tr>
-            <td><%=rs2.getInt("id")%></td>
-            <td><%=rs2.getDouble("amount")%></td>
-            <td><%=rs2.getTimestamp("payment_date").toLocalDateTime().toLocalDate()%></td>
-            <td><%=rs2.getTimestamp("payment_date").toLocalDateTime().toLocalTime()%></td>
-        </tr>
+<table>
+
+<tr>
+<td><b>Student ID</b></td>
+<td><%=rs.getInt("id")%></td>
+</tr>
+
+<tr>
+<td><b>Name</b></td>
+<td><%=rs.getString("name")%></td>
+</tr>
+
+<tr>
+<td><b>Email</b></td>
+<td><%=rs.getString("email")%></td>
+</tr>
+
+<tr>
+<td><b>Department</b></td>
+<td><%=rs.getString("department")%></td>
+</tr>
+
+<tr>
+<td><b>Course Duration</b></td>
+<td><%=rs.getString("duration")%></td>
+</tr>
+
+<tr>
+<td><b>Total Fees</b></td>
+<td><%=rs.getString("fees")%></td>
+</tr>
+
+</table>
 
 <%
-    }
-}catch(Exception e){
-    out.println(e);
+
 }
+
+con.close();
+
+}catch(Exception e){
+
+out.println(e);
+
+}
+
 %>
 
-    </table>
+<div class="back">
+
+<a href="studentDashboard.jsp">
+
+Back To Dashboard
+
+</a>
+
+</div>
+
+</div>
 
 </div>
 
 </body>
+
 </html>

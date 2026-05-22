@@ -1,122 +1,220 @@
-<%@ page session="true" %>
+<%@page import="java.sql.*"%>
 
 <%
-if(session.getAttribute("name")==null){
-    response.sendRedirect("login.jsp");
+
+String email =
+        (String)session.getAttribute("studentEmail");
+
+if(email == null){
+
+    response.sendRedirect("loginStudent.jsp");
+    return;
 }
+
+String id = "";
+String name = "";
+String phone = "";
+String department = "";
+String photo = "";
+
+try{
+
+    Class.forName("com.mysql.cj.jdbc.Driver");
+
+    Connection con =
+            DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/Bareilly_University",
+                    "root",
+                    "1234"
+            );
+
+    PreparedStatement ps =
+            con.prepareStatement(
+                    "select * from students where email=?"
+            );
+
+    ps.setString(1,email);
+
+    ResultSet rs = ps.executeQuery();
+
+    if(rs.next()){
+
+        id = rs.getString("id");
+        name = rs.getString("name");
+        phone = rs.getString("phone");
+        department = rs.getString("department");
+        photo = rs.getString("photo");
+    }
+
+}catch(Exception e){
+    out.println(e);
+}
+
+if(photo == null || photo.equals("")){
+    photo = "default.png";
+}
+
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
+
 <title>ID Card</title>
 
 <style>
-body{
+
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
     font-family:Arial;
-    background:url('images/university.png') no-repeat center;
+}
+
+body{
+
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:url('images/university.jpeg');
+
     background-size:cover;
+    background-position:center;
 }
 
-/* CARD */
 .card{
+
     width:330px;
-    margin:60px auto;
+
+    padding:25px;
+
+    border-radius:20px;
+
     background:white;
-    padding:20px;
-    border-radius:12px;
+
     text-align:center;
-    box-shadow:0 0 15px rgba(0,0,0,0.3);
+
+    box-shadow:0 0 20px rgba(0,0,0,0.4);
 }
 
-/* PHOTO */
+.logo{
+
+    width:90px;
+    margin-bottom:10px;
+}
+
 .photo{
-    width:100px;
-    height:100px;
+
+    width:120px;
+    height:120px;
+
     border-radius:50%;
-    border:3px solid #007bff;
-    margin:10px 0;
+
+    object-fit:cover;
+
+    border:4px solid #00cfff;
+
+    margin-top:15px;
 }
 
-/* TEXT */
-h3{
-    margin:5px 0;
+h2{
+    margin-top:10px;
+    color:#333;
 }
 
-p{
-    margin:6px 0;
-    font-size:14px;
-}
+.info{
 
-/* BUTTONS */
-.buttons{
-    text-align:center;
     margin-top:20px;
+    text-align:left;
+}
+
+.info p{
+
+    margin-top:10px;
+    font-size:16px;
+}
+
+.btns{
+
+    margin-top:25px;
 }
 
 .btn{
-    padding:10px 16px;
-    margin:5px;
+
+    padding:10px 18px;
+
     border:none;
-    border-radius:6px;
-    cursor:pointer;
+
+    border-radius:8px;
+
     color:white;
+
+    text-decoration:none;
+
+    margin:5px;
+
+    display:inline-block;
 }
 
-.print{ background:#28a745; }
-.back{ background:#007bff; }
-
-/* ? PRINT FIX */
-@media print {
-
-    .buttons{
-        display:none;   /* ? button hide */
-    }
-
-    body{
-        background:white;
-    }
-
-    .card{
-        box-shadow:none;
-        margin:0 auto;
-    }
+.download{
+    background:#00c853;
 }
+
+.back{
+    background:#2196f3;
+}
+
 </style>
+
 </head>
 
 <body>
 
 <div class="card">
 
-    <!-- LOGO -->
-    <img src="<%=request.getContextPath()%>/images/logo.png" width="70">
+    <img src="images/logo2.png" class="logo">
 
-    <h3>Bareilly University</h3>
-    <h4>Student ID Card</h4>
+    <h2>Bareilly University</h2>
 
-    <!-- ? PHOTO (OLD FLOW SESSION) -->
-    <img class="photo"
-    <img src="images/<%=session.getAttribute("photo")%>" width="100">
+    <p>Student ID Card</p>
 
-    <!-- DETAILS -->
-    <p><b>ID:</b> <%=session.getAttribute("id")%></p>
-    <p><b>Name:</b> <%=session.getAttribute("name")%></p>
-    <p><b>Email:</b> <%=session.getAttribute("email")%></p>
-    <p><b>Phone:</b> <%=session.getAttribute("phone")%></p>
-    <p><b>Department:</b> <%=session.getAttribute("department")%></p>
+    <img src="images/uploads/<%=photo%>"
+         class="photo">
 
-</div>
+    <div class="info">
 
-<!-- ? BUTTONS -->
-<div class="buttons">
-    <button class="btn print" onclick="window.print()">Download</button>
+        <p><b>ID :</b> <%=id%></p>
 
-    <button class="btn back"
-        onclick="window.location.href='studentDashboard.jsp'">
-        Back to Dashboard
-    </button>
+        <p><b>Name :</b> <%=name%></p>
+
+        <p><b>Email :</b> <%=email%></p>
+
+        <p><b>Phone :</b> <%=phone%></p>
+
+        <p><b>Department :</b> <%=department%></p>
+
+    </div>
+
+    <div class="btns">
+
+        <a href="#"
+           onclick="window.print()"
+           class="btn download">
+
+           Download
+        </a>
+
+        <a href="studentDashboard.jsp"
+           class="btn back">
+
+           Back
+        </a>
+
+    </div>
+
 </div>
 
 </body>

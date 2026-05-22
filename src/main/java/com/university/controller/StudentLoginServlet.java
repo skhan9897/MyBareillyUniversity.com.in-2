@@ -42,16 +42,20 @@ public class StudentLoginServlet extends HttpServlet {
 
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
+            if(rs.next()){
 
-                HttpSession session = request.getSession();
+    HttpSession session = request.getSession();
 
-                session.setAttribute("studentEmail", email);
+    session.setAttribute("studentEmail", email);
 
-                response.sendRedirect(request.getContextPath()
-                        + "/studentDashboard.jsp");
+    String photo = rs.getString("photo");
 
-            } else {
+    session.setAttribute("photo", photo);
+
+    response.sendRedirect("studentDashboard.jsp");
+
+}
+            else {
 
                 response.getWriter().println("LOGIN FAILED");
 

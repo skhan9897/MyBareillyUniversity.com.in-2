@@ -1,163 +1,250 @@
-<%@ page import="java.sql.*" %>
+<%@page import="java.sql.*"%>
+
 <!DOCTYPE html>
 <html>
 <head>
+
 <title>View Students</title>
 
 <style>
-body{
+
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
     font-family:Arial;
-    background:url('images/university.png') no-repeat center;
+}
+
+body{
+
+    min-height:100vh;
+
+    background:url('images/university.jpeg');
+
     background-size:cover;
+    background-position:center;
+
+    padding:30px;
 }
 
-/* ? HEADER */
-.header{
-    text-align:center;
-    color:white;
-    padding:20px;
-}
-
-.header img{
-    width:120px;
-}
-
-.header h2{
-    margin:5px 0;
-}
-
-/* ? TABLE BOX */
 .container{
-    width:90%;
-    margin:20px auto;
-    background:rgba(255,255,255,0.95);
-    padding:20px;
-    border-radius:10px;
-    position:relative;
+
+    width:95%;
+
+    margin:auto;
+
+    background:rgba(255,255,255,0.15);
+
+    backdrop-filter:blur(12px);
+
+    border-radius:20px;
+
+    padding:25px;
+
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
 }
 
-/* ? WATERMARK */
-.container::before{
-    content:"";
-    background:url('images/logo.png') no-repeat center;
-    background-size:300px;
-    opacity:0.05;
-    position:absolute;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    pointer-events:none;
+h1{
+
+    text-align:center;
+
+    color:white;
+
+    margin-bottom:25px;
 }
 
-/* TABLE */
 table{
+
     width:100%;
+
     border-collapse:collapse;
+
+    background:rgba(255,255,255,0.12);
+
+    overflow:hidden;
+
+    border-radius:15px;
 }
 
 th{
-    background:#007bff;
+
+    background:#00cfff;
+
     color:white;
-    padding:10px;
+
+    padding:14px;
+
+    font-size:16px;
 }
 
 td{
-    padding:10px;
+
+    padding:12px;
+
     text-align:center;
-    border-bottom:1px solid #ccc;
-}
 
-img{
-    border-radius:50%;
-}
-
-/* BUTTONS */
-.btn{
-    padding:5px 10px;
-    border:none;
     color:white;
-    cursor:pointer;
+
+    border-bottom:1px solid rgba(255,255,255,0.2);
 }
 
-.edit{background:green;}
-.delete{background:red;}
+tr:hover{
+
+    background:rgba(255,255,255,0.1);
+}
+
+.photo{
+
+    width:70px;
+    height:70px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:3px solid white;
+}
+
+.btn{
+
+    padding:8px 14px;
+
+    border:none;
+
+    border-radius:8px;
+
+    text-decoration:none;
+
+    color:white;
+
+    font-size:14px;
+}
+
+.edit{
+    background:#00c853;
+}
+
+.delete{
+    background:#ff1744;
+}
 
 </style>
+
 </head>
 
 <body>
 
-<!-- ? HEADER -->
-<div class="header">
-    <img src="images/logo.png">
-    <h2>Bareilly University</h2>
-    <h3>Student Details</h3>
-</div>
-
-<!-- ? TABLE -->
 <div class="container">
+
+<h1>All Students</h1>
 
 <table>
 
 <tr>
-<th>Photo</th>
-<th>Name</th>
-<th>Email</th>
-<th>Phone</th>
-<th>Department</th>
-<th>Duration</th>
-<th>Fees</th>
-<th>Action</th>
+
+    <th>ID</th>
+    <th>Photo</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>Department</th>
+    <th>Duration</th>
+    <th>Fees</th>
+    <th>Action</th>
+
 </tr>
 
 <%
+
 try{
+
     Class.forName("com.mysql.cj.jdbc.Driver");
 
-    Connection con = DriverManager.getConnection(
-    "jdbc:mysql://localhost:3306/Bareilly_University","root","1234");
+    Connection con =
+            DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/Bareilly_University",
+                    "root",
+                    "1234"
+            );
 
     Statement st = con.createStatement();
 
-    ResultSet rs = st.executeQuery(
-    "SELECT s.*, c.duration, c.total_fee FROM students s LEFT JOIN courses c ON s.course_id=c.id");
+    ResultSet rs =
+            st.executeQuery(
+                    "select * from students"
+            );
 
     while(rs.next()){
+
 %>
 
 <tr>
 
 <td>
-<img src="images/<%=rs.getString("photo")%>" width="60" height="60">
+    <%=rs.getInt("id")%>
 </td>
 
-<td><%=rs.getString("name")%></td>
-<td><%=rs.getString("email")%></td>
-<td><%=rs.getString("phone")%></td>
-<td><%=rs.getString("department")%></td>
+<td>
 
-<td><%=rs.getInt("duration")%> Years</td>
-<td><%=rs.getDouble("total_fee")%></td>
+<img src="images/uploads/<%=rs.getString("photo")%>"
+     class="photo">
+
+</td>
 
 <td>
-<a href="editStudent.jsp?id=<%=rs.getInt("id")%>">
-<button class="btn edit">Edit</button>
+    <%=rs.getString("name")%>
+</td>
+
+<td>
+    <%=rs.getString("email")%>
+</td>
+
+<td>
+    <%=rs.getString("phone")%>
+</td>
+
+<td>
+    <%=rs.getString("department")%>
+</td>
+
+<td>
+    <%=rs.getString("duration")%>
+</td>
+
+<td>
+    <%=rs.getString("fees")%>
+</td>
+
+<td>
+
+<a href="editStudent.jsp?id=<%=rs.getInt("id")%>"
+   class="btn edit">
+
+   Edit
 </a>
 
-<a href="deleteStudent?id=<%=rs.getInt("id")%>">
-<button class="btn delete">Delete</button>
+<a href="DeleteStudentServlet?id=<%=rs.getInt("id")%>"
+   class="btn delete">
+
+   Delete
 </a>
+
 </td>
 
 </tr>
 
 <%
+
     }
+
+    con.close();
+
 }catch(Exception e){
+
     out.println(e);
+
 }
+
 %>
 
 </table>

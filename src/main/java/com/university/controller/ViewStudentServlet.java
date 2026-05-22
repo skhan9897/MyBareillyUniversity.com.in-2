@@ -9,7 +9,7 @@ import javax.servlet.http.*;
 
 import com.university.util.DBConnection;
 
-@WebServlet("/ViewStudentServlet")
+@WebServlet("/viewStudent")
 public class ViewStudentServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
